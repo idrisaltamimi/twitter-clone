@@ -1,5 +1,5 @@
-import { type NextPage } from "next";
-import NewTweetForm from "~/components/NewTweetForm";
+import { type NextPage } from "next"
+import NewTweetForm from "~/components/NewTweetForm"
 
 const Home: NextPage = () => {
   return (
@@ -8,8 +8,15 @@ const Home: NextPage = () => {
         <h1 className="mb-2 px-4 text-lg font-bold">Home</h1>
       </header>
       <NewTweetForm />
+      <RecentTweets />
     </>
   )
-};
+}
 
-export default Home;
+function RecentTweets() {
+  const tweets = []
+
+  return <InfiniteTweetList tweets={tweets} />
+}
+
+export default Home
