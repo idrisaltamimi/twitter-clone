@@ -1,54 +1,57 @@
-import { useSession } from "next-auth/react"
-import { FormEvent, useCallback, useLayoutEffect, useRef, useState } from "react"
-import { api } from "~/utils/api"
+import { useSession } from "next-auth/react";
+import type { FormEvent } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
-import Button from "./Button"
-import ProfileImage from "./ProfileImage"
+import { api } from "~/utils/api";
+import Button from "./Button";
+import ProfileImage from "./ProfileImage";
 
 function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
-  if (textArea == null) return
-  textArea.style.height = "0"
-  textArea.style.height = `${textArea.scrollHeight}px`
+  if (textArea == null) return;
+  textArea.style.height = "0";
+  textArea.style.height = `${textArea.scrollHeight}px`;
 }
 
 const NewTweetForm = () => {
-  const session = useSession()
+  const session = useSession();
 
-  if (session.status !== "authenticated") return null
+  if (session.status !== "authenticated") return null;
 
-  return <Form />
-}
+  return <Form />;
+};
 
 function Form() {
-  const session = useSession()
-  const [inputValue, setInputValue] = useState<string>("")
-  const textAreaRef = useRef<HTMLTextAreaElement>()
-
+  const session = useSession();
+  const [inputValue, setInputValue] = useState("");
+  const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
-    updateTextAreaSize(textArea)
-    textAreaRef.current = textArea
-  }, [])
+    updateTextAreaSize(textArea);
+    textAreaRef.current = textArea;
+  }, []);
 
   useLayoutEffect(() => {
-    updateTextAreaSize(textAreaRef.current)
-  }, [inputValue])
+    updateTextAreaSize(textAreaRef.current);
+  }, [inputValue]);
 
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
-      setInputValue("")
-    }
-  })
+      setInputValue("");
+    },
+  });
 
-  if (session.status !== "authenticated") return null
+  if (session.status !== "authenticated") return null;
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    createTweet.mutate({ content: inputValue })
-  }
+    createTweet.mutate({ content: inputValue });
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 px-4 py-2 border-b">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-2 border-b px-4 py-2"
+    >
       <div className="flex gap-4">
         <ProfileImage src={session.data.user.image} />
         <textarea
@@ -62,7 +65,7 @@ function Form() {
       </div>
       <Button className="self-end">Tweet</Button>
     </form>
-  )
+  );
 }
 
-export default NewTweetForm
+export default NewTweetForm;
